@@ -46,7 +46,7 @@ $tweaks = @(
 "DisableNagle",
 "removeDefender",
 "DorEOneDrive", #Option to Install Or Uninstall Microsoft One Drive!
-"askXBOX",
+"removeXBOX",
 #"askMSPPS",                      #Option to enable or disable Microsoft Software Protection Platform Service” Causing High CPU Usage
 #"askMSWSAPPX",                   #Option to enable or disable Wsappx to Fix 100% Disk Usage in Windows 10 in older systems
 
@@ -420,56 +420,25 @@ Function ApplyPCOptimizations
 }
 
 #Enable or Disable and remove xbox related apps
-Function askXBOX
+Function removeXBOX
 {
-    do
+    cls
+    $errpref = $ErrorActionPreference #save actual preference
+    $ErrorActionPreference = "silentlycontinue"
+    Write-Output "Disabling Xbox features..."
+    Get-AppxPackage "Microsoft.XboxApp" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.XboxIdentityProvider" | Remove-AppxPackage -ErrorAction SilentlyContinue
+    Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.XboxGameOverlay" | Remove-AppxPackage
+    Get-AppxPackage "Microsoft.Xbox.TCUI" | Remove-AppxPackage
+    Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 0
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR"))
     {
-        cls
-        Write-Host "================ Do You Want To Disable XBOX features and all related APPS? ================"
-        Write-ColorOutput "WARRNING: REMOVING XBOX APPS will make Win+G do nothing!" Red
-        Write-Host "Y: Press 'Y' to Disable XBOX features."
-        Write-Host "N: Press 'N' to Enable XBOX features."
-        Write-Host "Q: Press 'Q' to Skip this."
-        $selection = Read-Host "Please make a selection"
-        switch ($selection)
-        {
-            'y' {
-                $errpref = $ErrorActionPreference #save actual preference
-                $ErrorActionPreference = "silentlycontinue"
-                Write-Output "Disabling Xbox features..."
-                Get-AppxPackage "Microsoft.XboxApp" | Remove-AppxPackage
-                Get-AppxPackage "Microsoft.XboxIdentityProvider" | Remove-AppxPackage -ErrorAction SilentlyContinue
-                Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay" | Remove-AppxPackage
-                Get-AppxPackage "Microsoft.XboxGameOverlay" | Remove-AppxPackage
-                Get-AppxPackage "Microsoft.Xbox.TCUI" | Remove-AppxPackage
-                Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 0
-                If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR"))
-                {
-                    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" | Out-Null
-                }
-                Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
-                $ErrorActionPreference = $errpref #restore previous preference
-                cls
-            }
-            'n' {
-                $errpref = $ErrorActionPreference #save actual preference
-                $ErrorActionPreference = "silentlycontinue"
-                Write-Output "Enabling Xbox features..."
-                Get-AppxPackage -AllUsers "Microsoft.XboxApp" | ForEach { Add-AppxPackage -DisableDevelopmentMode -Register "$( $_.InstallLocation )\AppXManifest.xml" }
-                Get-AppxPackage -AllUsers "Microsoft.XboxIdentityProvider" | ForEach { Add-AppxPackage -DisableDevelopmentMode -Register "$( $_.InstallLocation )\AppXManifest.xml" }
-                Get-AppxPackage -AllUsers "Microsoft.XboxSpeechToTextOverlay" | ForEach { Add-AppxPackage -DisableDevelopmentMode -Register "$( $_.InstallLocation )\AppXManifest.xml" }
-                Get-AppxPackage -AllUsers "Microsoft.XboxGameOverlay" | ForEach { Add-AppxPackage -DisableDevelopmentMode -Register "$( $_.InstallLocation )\AppXManifest.xml" }
-                Get-AppxPackage -AllUsers "Microsoft.Xbox.TCUI" | ForEach { Add-AppxPackage -DisableDevelopmentMode -Register "$( $_.InstallLocation )\AppXManifest.xml" }
-                Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 1
-                Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -ErrorAction SilentlyContinue
-                $ErrorActionPreference = $errpref #restore previous preference
-                cls
-            }
-            'q' {
-            }
-        }
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" | Out-Null
     }
-    until ($selection -match "y" -or $selection -match "n" -or $selection -match "q")
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
+    $ErrorActionPreference = $errpref #restore previous preference
+    cls
 
 }
 
@@ -2668,80 +2637,44 @@ Function EnableThumbsDB
 # Option To Uninstall Or install OneDrive 
 Function DorEOneDrive
 {
-
-    do
+    Write-Output "Disabling Microsoft OneDrive and related Processes..."
+    # Disable OneDrive
+    $errpref = $ErrorActionPreference #save actual preference
+    $ErrorActionPreference = "silentlycontinue"
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive"))
     {
-        cls
-        Write-Host "================ Do you want to Disable Microsoft OneDrive? ================"
-        Write-Host "Y: Press 'Y' to Disable OneDrive."
-        Write-Host "N: Press 'N' to Enable OneDrive."
-        Write-Host "Q: Press 'Q' to Skip this."
-        $selection = Read-Host "Please make a selection"
-        switch ($selection)
-        {
-            'y' {
-                Write-Output "Disabling Microsoft OneDrive and related Processes..."
-                # Disable OneDrive
-                $errpref = $ErrorActionPreference #save actual preference
-                $ErrorActionPreference = "silentlycontinue"
-                If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive"))
-                {
-                    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" | Out-Null
-                }
-                Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Type DWord -Value 1 -ErrorAction SilentlyContinue
-                # Uninstall OneDrive - Not applicable to Server
-                Stop-Process -Name "OneDrive" -ErrorAction SilentlyContinue
-                Start-Sleep -s 2
-                $onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
-                If (!(Test-Path $onedrive))
-                {
-                    $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
-                }
-                Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
-                Start-Sleep -s 2
-                Stop-Process -Name "explorer" -ErrorAction SilentlyContinue
-                Start-Sleep -s 2
-                Remove-Item -Path "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-                Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-                Remove-Item -Path "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
-                Remove-Item -Path "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse -ErrorAction SilentlyContinue
-                If (!(Test-Path "HKCR:"))
-                {
-                    New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT | Out-Null
-                }
-                Remove-Item -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
-                Remove-Item -Path "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
-                reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
-                reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
-                reg unload "hku\Default"
-                Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
-                Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive*' -ea SilentlyContinue | Unregister-ScheduledTask -Confirm:$false
-                $ErrorActionPreference = $errpref #restore previous preference
-                cls
-            }
-            'n' {
-                Write-Output "Enabling Microsoft OneDrive and related Processes..."
-                # Enable OneDrive
-                $errpref = $ErrorActionPreference #save actual preference
-                $ErrorActionPreference = "silentlycontinue"
-                Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -ErrorAction SilentlyContinue
-
-                # Install OneDrive - Not applicable to Server
-                $onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
-                If (!(Test-Path $onedrive))
-                {
-                    $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
-                }
-                Start-Process $onedrive -NoNewWindow
-                $ErrorActionPreference = $errpref #restore previous preference
-                cls
-            }
-            'q' {
-            }
-        }
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" | Out-Null
     }
-    until ($selection -match "y" -or $selection -match "n" -or $selection -match "q")
-
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Type DWord -Value 1 -ErrorAction SilentlyContinue
+    # Uninstall OneDrive - Not applicable to Server
+    Stop-Process -Name "OneDrive" -ErrorAction SilentlyContinue
+    Start-Sleep -s 2
+    $onedrive = "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe"
+    If (!(Test-Path $onedrive))
+    {
+        $onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
+    }
+    Start-Process $onedrive "/uninstall" -NoNewWindow -Wait
+    Start-Sleep -s 2
+    Stop-Process -Name "explorer" -ErrorAction SilentlyContinue
+    Start-Sleep -s 2
+    Remove-Item -Path "$env:USERPROFILE\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+    Remove-Item -Path "$env:LOCALAPPDATA\Microsoft\OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+    Remove-Item -Path "$env:PROGRAMDATA\Microsoft OneDrive" -Force -Recurse -ErrorAction SilentlyContinue
+    Remove-Item -Path "$env:SYSTEMDRIVE\OneDriveTemp" -Force -Recurse -ErrorAction SilentlyContinue
+    If (!(Test-Path "HKCR:"))
+    {
+        New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT | Out-Null
+    }
+    Remove-Item -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
+    Remove-Item -Path "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
+    reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
+    reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
+    reg unload "hku\Default"
+    Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
+    Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive*' -ea SilentlyContinue | Unregister-ScheduledTask -Confirm:$false
+    $ErrorActionPreference = $errpref #restore previous preference
+    cls
 }
 
 # Disable built-in Adobe Flash in IE and Edge
