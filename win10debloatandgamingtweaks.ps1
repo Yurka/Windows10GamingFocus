@@ -7,7 +7,7 @@
 #
 #	Addition: One command to rule them all, One command to find it, and One command to Run it! 
 #
-#     > powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('http://tweaks.daddymadu.gg')"
+#     > powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/Yurka/Windows10GamingFocus/master/win10debloatandgamingtweaks.ps1')"
 #
 #     Changelogs Moved to ReadMe File for better mangement. 
 #
