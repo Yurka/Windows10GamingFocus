@@ -3703,11 +3703,9 @@ Function UltimateCleaner
 #Notifying user to reboot!
 Function Finished
 {
-    cmd /c 'REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation" /v "Manufacturer" /t REG_SZ /d "This PC is Optimized by DaddyMadu" /f 2>nul' > $null
-    cmd /c 'REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation" /v "SupportURL" /t REG_SZ /d "http://daddymadu.gg" /f 2>nul' > $null
+    cmd /c 'REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation" /v "Manufacturer" /t REG_SZ /d "This PC is Optimized" /f 2>nul' > $null
     Start-Sleep -s 5
-    Write-Output "Done! Please Reboot Your PC! Don't forget to follow me on Social Media."
-    Start "http://daddymadu.gg"
+    Write-Output "Done! Please Reboot Your PC!"
 }
 
 ##########
