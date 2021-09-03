@@ -263,7 +263,7 @@ Option to Enable & Install Or Disable & Uninstall Microsoft OneDrive
 
 Simply Run cmd (Command Prompt) as Administrator and paste the following!
 ```
-powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('http://tweaks.daddymadu.gg')"
+powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/Yurka/Windows10GamingFocus/master/win10debloatandgamingtweaks.ps1')"
 ```
 if error then use the following!
 ```
