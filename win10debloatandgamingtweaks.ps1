@@ -401,7 +401,7 @@ Function InstallIrfanview
 Function InstallChocoTools
 {
     cls
-    choco openjdk git maven rapidee vim wireguard -y
+    choco install openjdk git maven rapidee vim wireguard -y
 }
 
 Function InstallChocoUpdates
