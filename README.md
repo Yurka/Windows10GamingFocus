@@ -265,14 +265,22 @@ Simply Run cmd (Command Prompt) as Administrator and paste the following!
 ```
 powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/Yurka/Windows10GamingFocus/master/win10debloatandgamingtweaks.ps1')"
 ```
-if error then use the following!
-```
-powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &iex(New-Object Net.WebClient).DownloadString('http://tweaks.daddymadu.gg')"
-```
-Or Run Powershell As Administrator and paste the following!
-```
-iex(New-Object Net.WebClient).DownloadString('http://tweaks.daddymadu.gg')
-```
+
+[comment]: <> (if error then use the following!)
+
+[comment]: <> (```)
+
+[comment]: <> (powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &iex&#40;New-Object Net.WebClient&#41;.DownloadString&#40;'http://tweaks.daddymadu.gg'&#41;")
+
+[comment]: <> (```)
+
+[comment]: <> (Or Run Powershell As Administrator and paste the following!)
+
+[comment]: <> (```)
+
+[comment]: <> (iex&#40;New-Object Net.WebClient&#41;.DownloadString&#40;'http://tweaks.daddymadu.gg'&#41;)
+
+[comment]: <> (```)
 To enable Action Center, put the following into Powershell run As Administrator!
 ```
 Write-Host "Enabling Action Center..."

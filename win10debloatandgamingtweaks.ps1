@@ -38,6 +38,7 @@ $tweaks = @(
 #"InstallSumatra",
 #"InstallChrome",
 "InstallChocoUpdates",
+"InstallChocoTools",
 "EnableUlimatePower", # DaddyMadu don't change order it will break other functions! just disable if you want with #
 # "ChangeDefaultApps", # Removed due to issues with steam and resetting default apps
 
@@ -350,7 +351,7 @@ function Write-ColorOutput
 Function InstallTitusProgs
 {
     Write-Output "Installing Chocolatey"
-    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    Set-ExecutionPolicy Bypass -Scope CurrentUser -ExecutionPolicy Unrestricted -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
     choco install chocolatey-core.extension -y
     Write-Output "Running O&O Shutup with Recommended Settings"
     Import-Module BitsTransfer
@@ -395,6 +396,12 @@ Function InstallVLC
 Function InstallIrfanview
 {
     Show-Choco-Menu -Title "Do you want to install IrfanView PhotoViewer?" -ChocoInstall "irfanview"
+}
+
+Function InstallChocoTools
+{
+    cls
+    choco openjdk git maven rapidee vim wireguard -y
 }
 
 Function InstallChocoUpdates
