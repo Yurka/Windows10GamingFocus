@@ -351,7 +351,7 @@ function Write-ColorOutput
 Function InstallTitusProgs
 {
     Write-Output "Installing Chocolatey"
-    Set-ExecutionPolicy Bypass -Scope CurrentUser -ExecutionPolicy Unrestricted -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
     choco install chocolatey-core.extension -y
     Write-Output "Running O&O Shutup with Recommended Settings"
     Import-Module BitsTransfer
@@ -3724,7 +3724,7 @@ Function RequireAdmin
 {
     If (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
     {
-        Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" $PSCommandArgs" -WorkingDirectory $pwd -Verb RunAs
+        Start-Process powershell.exe "-NoProfile -ExecutionPolicy -File `"$PSCommandPath`" $PSCommandArgs" -WorkingDirectory $pwd -Verb RunAs
         Exit
     }
 }
